@@ -12,6 +12,8 @@ const char *get_error(int errno)
 		case 12: return "Generic list error: can't get index of element in empty list.";
 		case 13: return "Generic list error: element not in list.";
 		case 14: return "Generic list error: index larger than max index (size - 1).";
+		case 15: return "Generic list error: index smaller than 0.";
+		case 16: return "Generic list error: can't remove from NULL-list.";
 	}
 }
 

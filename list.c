@@ -2,12 +2,32 @@
 #define _JAY_GLISTC
 #include "list.h"
 
+//INIT
 struct _list_node *__init__();
+
+//ADD 1
 int append(list target, _list_node_type *value);
 int insert_at(list target, _list_node_type *value, int index);
 int insort(list target, _list_node_type *value, int order(_list_node_type *, _list_node_type *));
+
+//REMOVE 1
+int removeAt(list target, int index);
+int remove_elem(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *));
+
+//GET
 int size(list target);
 int indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *));
+
+//ADD BATCH
+int batch_append(list target, _list_node_type *values[], int amount);
+int batch_insertAt(list target, _list_node_type *values[], int amount, int firstind);
+int batch_insort(list target, _list_node_type *values[], int amount, int order(_list_node_type *, _list_node_type *));
+
+//REMOVE BATCH
+int batch_removeAt(list target, int indexes[], int amount);
+int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(_list_node_type *, _list_node_type *));
+
+//PRINT
 int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *));
 
 struct _list_node *__init__()
@@ -56,6 +76,12 @@ int insert_at(list target, _list_node_type *value, int index)
 	if(target == NULL)
 	{
 		JAY_ERRNO = 11;
+		return 0;
+	}
+
+	if(index < 0)
+	{
+		JAY_ERRNO = 15;
 		return 0;
 	}
 
@@ -135,6 +161,69 @@ int insort(list target, _list_node_type *value, int order(_list_node_type *, _li
         return 1;
 }
 
+int removeAt(list target, int index)
+{
+	if(target == NULL)
+	{
+		JAY_ERRNO = 16;
+		return 0;
+	}
+
+	if(index < 0)
+	{
+		JAY_ERRNO = 15;
+		return 0;
+	}
+
+	if (index >= size(target))
+	{
+		JAY_ERRNO = 14;
+		return 0;
+	}
+
+	int where = 0;
+	struct _list_node *walk = *target;
+	struct _list_node *prev = NULL;
+	while(walk->next != NULL && where < index)
+	{
+		prev = walk;
+		walk = walk->next;
+		where++;
+	}
+
+	struct _list_node *tmp;
+	if(prev == NULL)
+	{
+		tmp = *target;
+		*target = walk->next;
+		free(tmp);
+		return 1;
+	}
+	if(walk->next == NULL)
+	{
+		tmp = walk;
+		prev->next = NULL;
+		free(tmp);
+		return 1;
+	}
+
+	tmp = walk;
+	prev->next = walk->next;
+	free(tmp);
+	return 1;
+}
+
+int remove_elem(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))
+{
+	int index = indexof(target, value, same);
+	if(index < 0)
+	{
+		JAY_ERRNO = 13;
+		return 0;
+	}
+	return removeAt(target, index);
+}
+
 int size(list target)
 {
 	if(target == NULL || (*target)->value == NULL)
@@ -174,6 +263,44 @@ int indexof(list target, _list_node_type *tofind, int same(_list_node_type *, _l
 		return -1;
 	}
 	return ind;
+}
+
+int batch_append(list target, _list_node_type *values[], int amount)
+{
+	int res = 0;
+	for(int i = 0; i < amount; i++) { res += append(target, values[i]); }
+	return (res - amount) + 1;
+}
+
+int batch_insertAt(list target, _list_node_type *values[], int amount, int firstind)
+{
+	int res = 0;
+	for(int i = 0; i < amount; i++)
+	{
+		res += insert_at(target, values[i], firstind + res);
+	}
+	return (res - amount) + 1;
+}
+
+int batch_insort(list target, _list_node_type *values[], int amount, int order(_list_node_type *, _list_node_type *))
+{
+	int res = 0;
+	for(int i = 0; i < amount; i++) { res += insort(target, values[i], order); }
+	return (res - amount) + 1;
+}
+
+int batch_removeAt(list target, int indexes[], int amount)
+{
+	int res = 0;
+	for(int i = 0; i < amount; i++) { res += removeAt(target, indexes[i] - res); }
+	return (res - amount) + 1;
+}
+
+int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(_list_node_type *, _list_node_type *))
+{
+	int res = 0;
+	for (int i = 0; i < amount; i++) { res += remove_elem(target, values[i], same); }
+	return (res - amount + 1);
 }
 
 int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *))
