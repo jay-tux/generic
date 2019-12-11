@@ -14,6 +14,9 @@ const char *get_error(int errno)
 		case 14: return "Generic list error: index larger than max index (size - 1).";
 		case 15: return "Generic list error: index smaller than 0.";
 		case 16: return "Generic list error: can't remove from NULL-list.";
+		case 17: return "Generic list error: can't sort empty list.";
+		case 18: return "Generic list error: can't sort 1-element list.";
+		case 19: return "Generic list error: STALIN SORT FAILED.";
 	}
 }
 

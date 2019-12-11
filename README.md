@@ -48,14 +48,18 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
     ![Candidate for renaming](https://img.shields.io/badge/Not%20OK-Candidate%20for%20renaming-red)
     * ``indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))``; returns the index of the first occurence of ``value``. Equality is determined by the ``int same(...)`` parameter, which should return 1 when both are equal.  
       
- * Adding objects in batch (each normal adding method has a batch version); contains three methods (each batch method returns ``(1 - <amount of failed insertions>)``):
+ * Adding objects in batch (each normal adding method has a batch version); contains four methods (each batch method returns ``(1 - <amount of failed insertions>)``):
    * ``int batch_append(list target, _list_node_type *values[], int amount)``; adds the first ``amount`` elements from ``values`` to the list, using the ``append`` method.
    * ``int batch_insertAt(list target, _list_node_type *values[], int amount, int firstind)``; adds the first ``amount`` elements from ``values`` to the list, starting at index ``firstind``, using the ``insert_at`` method. The order of the elements in ``values`` is preserved.
-   * ``int batch_insort(list target, _list_node_type *values[], int amount, int order(...))``; adds the first ``amount`` elements of ``values`` to the list in a sorted manner. The ``insort`` method is used on each element. The ``order(...)`` parameter is described with the ``insort`` method.  
+   * ``int batch_insort(list target, _list_node_type *values[], int amount, int order(...))``; adds the first ``amount`` elements of ``values`` to the list in a sorted manner. The ``insort`` method is used on each element. The ``order(...)`` parameter is described with the ``insort`` method.
+   * ``int sort(list target, int order(_list_node_type *, _list_node_type *))``; sorts a list using the given comparing method. The ``int order(...)`` method should return -1 when the first parameter precedes the second one, 0 when both are 'equal', and +1 when the first parameter succeeds the second one. Upon failing, nothing happens and the method returns 0.
+   * ``int stalin_sort(list target, int order(_list_node_type *, _list_node_type *))``; Stalin-sorts the list (iterates over the list and eliminates all elements that are not in the right place.  
      
- * Removing objects in batch (each normal removing method has a batch version); contains two methods (each batch method returns ``(1 - <amount of failed removals>)``):
+ * Removing objects in batch (each normal removing method has a batch version); contains three methods (each batch method returns ``(1 - <amount of failed removals>)``):
    * ``int batch_removeAt(list target, int indexes[], int amount)``; removes the items at the given indexes from the list. Each index is corrected with the amount of succesfull removals, so the indexes should be the indexes for the items before the removal started.
    * ``int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(...))``; removes the first occurence of each item in ``values``. The ``same`` parameter is used for comparison, see the ``delete_elem`` method.  
+   * ``int __destroy__(list target)``; removes the whole list from memory.  
+   ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20list%20is%20corrupted-ff69b4)
   
  * Printing the list; contains one method:
    * ``int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *))``; prints the given list to the specified stream (usually ``stdout`` or ``stderr``, but can be a file stream as well)

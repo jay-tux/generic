@@ -22,10 +22,13 @@ int indexof(list target, _list_node_type *value, int same(_list_node_type *, _li
 int batch_append(list target, _list_node_type *values[], int amount);
 int batch_insertAt(list target, _list_node_type *values[], int amount, int firstind);
 int batch_insort(list target, _list_node_type *values[], int amount, int order(_list_node_type *, _list_node_type *));
+int sort(list target, int order(_list_node_type *, _list_node_type *));
+int stalin_sort(list target, int order(_list_node_type *, _list_node_type *));
 
 //REMOVE BATCH
 int batch_removeAt(list target, int indexes[], int amount);
 int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(_list_node_type *, _list_node_type *));
+int __destroy__(list target);
 
 //PRINT
 int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *));
@@ -289,6 +292,85 @@ int batch_insort(list target, _list_node_type *values[], int amount, int order(_
 	return (res - amount) + 1;
 }
 
+int sort(list target, int order(_list_node_type *, _list_node_type *))
+{
+	if(target == NULL)
+	{
+		JAY_ERRNO = 17;
+		return 0;
+	}
+	if((*target)->next == NULL)
+	{
+		JAY_ERRNO = 18;
+		return 0;
+	}
+
+	struct _list_node *newl = __init__();
+	struct _list_node *walk = *target;
+	struct _list_node *rm = NULL;
+	while(walk != NULL)
+	{
+		if( !insort(&newl, walk->value, order)) { __destroy__(&newl); return 0; }
+		walk = walk->next;
+	}
+	fprintf(stderr, "Finished sorting\n");
+	walk = *target;
+	fprintf(stderr, "Freeing disposable nodes\n");
+	while (walk != NULL)
+	{
+		rm = walk;
+		walk = walk->next;
+		free(rm);
+	}
+	*target = newl;
+	return 1;
+}
+
+int stalin_sort(list target, int order(_list_node_type *, _list_node_type *))
+{
+	if(target == NULL)
+	{
+		JAY_ERRNO = 17;
+		return 0;
+	}
+	if((*target)->next == NULL)
+	{
+		JAY_ERRNO = 18;
+		return 0;
+	}
+
+	struct _list_node *walk = *target;
+	struct _list_node *tmp = NULL;
+	int index = 0;
+	while(walk != NULL)
+	{
+		//ERROR SOMEWHERE HERE
+		if (tmp == NULL)
+		{
+			tmp = walk;
+			walk = walk->next;
+			continue;
+		}
+		if (order(tmp->value, walk->value) > 0)
+		{
+			walk = walk->next;
+			if(!removeAt(target, index))
+			{
+				JAY_ERRNO = 19;
+				return 0;
+			}
+		}
+		else
+		{
+			tmp = walk;
+			walk = walk->next;
+			index++;
+		}
+	}
+
+	return 1;
+}
+
 int batch_removeAt(list target, int indexes[], int amount)
 {
 	int res = 0;
@@ -301,6 +383,16 @@ int batch_remove_elem(list target, _list_node_type *values[], int amount, int sa
 	int res = 0;
 	for (int i = 0; i < amount; i++) { res += remove_elem(target, values[i], same); }
 	return (res - amount + 1);
+}
+
+int __destroy__(list target)
+{
+	while(*target != NULL)
+	{
+		if(!removeAt(target, 0)) return 0;
+	}
+	free(*target);
+	return 1;
 }
 
 int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *))
