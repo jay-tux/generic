@@ -339,32 +339,23 @@ int stalin_sort(list target, int order(_list_node_type *, _list_node_type *))
 		return 0;
 	}
 
-	struct _list_node *walk = *target;
-	struct _list_node *tmp = NULL;
+	struct _list_node *walker = *target;
 	int index = 0;
-	while(walk != NULL)
+	while(walker->next != NULL)
 	{
-		//ERROR SOMEWHERE HERE
-		if (tmp == NULL)
+		if(order(walker->value, walker->next->value) < 0)
 		{
-			tmp = walk;
-			walk = walk->next;
-			continue;
+                        walker = walker->next;
+                        index++;
 		}
-		if (order(tmp->value, walk->value) > 0)
+		else
 		{
-			walk = walk->next;
+			walker = walker->next;
 			if(!removeAt(target, index))
 			{
 				JAY_ERRNO = 19;
 				return 0;
 			}
-		}
-		else
-		{
-			tmp = walk;
-			walk = walk->next;
-			index++;
 		}
 	}
 
