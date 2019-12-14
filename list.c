@@ -2,38 +2,7 @@
 #define _JAY_GLISTC
 #include "list.h"
 
-//INIT
-struct _list_node *__init__();
-
-//ADD 1
-int append(list target, _list_node_type *value);
-int insert_at(list target, _list_node_type *value, int index);
-int insort(list target, _list_node_type *value, int order(_list_node_type *, _list_node_type *));
-
-//REMOVE 1
-int removeAt(list target, int index);
-int remove_elem(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *));
-
-//GET
-int size(list target);
-int indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *));
-
-//ADD BATCH
-int batch_append(list target, _list_node_type *values[], int amount);
-int batch_insertAt(list target, _list_node_type *values[], int amount, int firstind);
-int batch_insort(list target, _list_node_type *values[], int amount, int order(_list_node_type *, _list_node_type *));
-int sort(list target, int order(_list_node_type *, _list_node_type *));
-int stalin_sort(list target, int order(_list_node_type *, _list_node_type *));
-
-//REMOVE BATCH
-int batch_removeAt(list target, int indexes[], int amount);
-int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(_list_node_type *, _list_node_type *));
-int __destroy__(list target);
-
-//PRINT
-int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *));
-
-struct _list_node *__init__()
+struct _list_node *__linit__()
 {
 	struct _list_node *root = (struct _list_node *)malloc(sizeof(struct _list_node));
 	if(root == NULL) 
@@ -95,7 +64,7 @@ int insert_at(list target, _list_node_type *value, int index)
 		return 1;
 	}
 
-	if(index >= size(target))
+	if(index >= list_size(target))
 	{
 		JAY_ERRNO = 14;
 		return 0;
@@ -178,7 +147,7 @@ int removeAt(list target, int index)
 		return 0;
 	}
 
-	if (index >= size(target))
+	if (index >= list_size(target))
 	{
 		JAY_ERRNO = 14;
 		return 0;
@@ -227,7 +196,7 @@ int remove_elem(list target, _list_node_type *value, int same(_list_node_type *,
 	return removeAt(target, index);
 }
 
-int size(list target)
+int list_size(list target)
 {
 	if(target == NULL || (*target)->value == NULL)
 	{
@@ -305,12 +274,12 @@ int sort(list target, int order(_list_node_type *, _list_node_type *))
 		return 0;
 	}
 
-	struct _list_node *newl = __init__();
+	struct _list_node *newl = __linit__();
 	struct _list_node *walk = *target;
 	struct _list_node *rm = NULL;
 	while(walk != NULL)
 	{
-		if( !insort(&newl, walk->value, order)) { __destroy__(&newl); return 0; }
+		if( !insort(&newl, walk->value, order)) { __ldestroy__(&newl); return 0; }
 		walk = walk->next;
 	}
 	fprintf(stderr, "Finished sorting\n");
@@ -376,7 +345,7 @@ int batch_remove_elem(list target, _list_node_type *values[], int amount, int sa
 	return (res - amount + 1);
 }
 
-int __destroy__(list target)
+int __ldestroy__(list target)
 {
 	while(*target != NULL)
 	{

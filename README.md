@@ -22,15 +22,15 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
  * ``_list_node_type``: this is the variable type contained within the list. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the list needs three helper functions to enable all implemented functionality; see ``./list.c``.
  * ``struct _list_node``: this contains the list nodes themselves.
  * ``list``: ``list`` is an alias for a pointer to a ``struct _list_node`` pointer (aka ``struct _list_node **``) this kind of pointer is necessary for all functionality.  
- ![Warning: the ``__init__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__init__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)
+ ![Warning: the ``__linit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__linit__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)
+ ``./list.h`` also contains all function headers for the ``./list.c`` file.
 
 ### ./list.c
  ![Dependency: ./list.h](https://img.shields.io/static/v1?label=Dependency&message=./list.h&color=informational)  
  The ``./list.c`` file contains the actual implementation of all functionality, using the structs and typedefs of the ``./list.h`` file. It is divided into 7 parts (most functions return 1 when succesfull, otherwise 0. If they fail, they set ``JAY_ERRNO`` accordingly):
  * Initialization (**INIT**); contains one method:
-   * ``struct _list_node __init__()``; this method initializes an empty list. Returns ``NULL`` when failed, and sets ``JAY_ERRNO`` accordingly.  
-  ![Warning: the ``__init__`` does not return a list, but a ``struct _list_node*``](https://img.shields.io/static/v1?label=WARNING&message=The%20__init__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)  
-  ![Candidate for renaming](https://img.shields.io/badge/Not%20OK-Candidate%20for%20renaming-red)  
+   * ``struct _list_node __linit__()``; this method initializes an empty list. Returns ``NULL`` when failed, and sets ``JAY_ERRNO`` accordingly.  
+  ![Warning: the ``__linit__`` does not return a list, but a ``struct _list_node*``](https://img.shields.io/static/v1?label=WARNING&message=The%20__linit__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)  
     
  * Adding one element; contains three methods:
    * ``int append(list target, _list_node_type *value)``; appends a value (of the type defined in ``./list.h``).
@@ -44,8 +44,7 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
       * The ``int same(...)`` parameter is a function pointer. It should return 1 when its parameters are 'equal', otherwise 0.  
   
   * Getting data about the list; contains two methods:
-    * ``int size(list target)``; returns the amount of items in the list, or -1 on failure. When failing, ``JAY_ERRNO`` is set.  
-    ![Candidate for renaming](https://img.shields.io/badge/Not%20OK-Candidate%20for%20renaming-red)
+    * ``int list_size(list target)``; returns the amount of items in the list, or -1 on failure. When failing, ``JAY_ERRNO`` is set.  
     * ``indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))``; returns the index of the first occurence of ``value``. Equality is determined by the ``int same(...)`` parameter, which should return 1 when both are equal.  
       
  * Adding objects in batch (each normal adding method has a batch version); contains four methods (each batch method returns ``(1 - <amount of failed insertions>)``):
@@ -58,8 +57,8 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
  * Removing objects in batch (each normal removing method has a batch version); contains three methods (each batch method returns ``(1 - <amount of failed removals>)``):
    * ``int batch_removeAt(list target, int indexes[], int amount)``; removes the items at the given indexes from the list. Each index is corrected with the amount of succesfull removals, so the indexes should be the indexes for the items before the removal started.
    * ``int batch_remove_elem(list target, _list_node_type *values[], int amount, int same(...))``; removes the first occurence of each item in ``values``. The ``same`` parameter is used for comparison, see the ``delete_elem`` method.  
-   * ``int __destroy__(list target)``; removes the whole list from memory.  
-   ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20list%20is%20corrupted-ff69b4)
+   * ``int __ldestroy__(list target)``; removes the whole list from memory.  
+   ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20list%20is%20corrupted-ff69b4)  
   
  * Printing the list; contains one method:
    * ``int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *))``; prints the given list to the specified stream (usually ``stdout`` or ``stderr``, but can be a file stream as well)
