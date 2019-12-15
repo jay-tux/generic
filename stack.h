@@ -15,10 +15,10 @@ typedef struct _stack_node **stack;
 
 struct _stack_node *__sinit__();
 int push(stack target, _stack_node_type *value);
-int multpush(stack target, _stack_node_type *values[], int amount);
-int pop(stack target, _stack_node_type *out);
-int peek(stack target, _stack_node_type *out);
-int multpop(stack target, _stack_node_type *out[], int amount);
+int batch_push(stack target, _stack_node_type *values[], int amount);
+_stack_node_type *pop(stack target);
+_stack_node_type *peek(stack target);
+int batch_pop(stack target, _stack_node_type *out[], int amount);
 int stack_size(stack target);
 int printstackto(stack target, FILE * restrict stream, const char *tostring(_stack_node_type *));
 int __sdestroy__(stack target);

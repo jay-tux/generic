@@ -24,7 +24,7 @@ int push(stack target, _stack_node_type *value)
 		return 0;
 	}
 
-	if(target->value == NULL)
+	if((*target)->value == NULL)
 	{
 		(*target)->value = value;
 		(*target)->next = NULL;
@@ -38,7 +38,7 @@ int push(stack target, _stack_node_type *value)
 	return 1;
 }
 
-int multpush(stack target, _stack_node_type *values[], int amount)
+int batch_push(stack target, _stack_node_type *values[], int amount)
 {
 	int res = 0;
 	for(int i = 0; i < amount; i++)
@@ -48,41 +48,45 @@ int multpush(stack target, _stack_node_type *values[], int amount)
 	return (amount - res) + 1;
 }
 
-int pop(stack target, _stack_node_type *out)
+_stack_node_type *pop(stack target)
 {
-	if(target == NULL || target->value == NULL)
+	if(target == NULL || (*target)->value == NULL)
 	{
 		JAY_ERRNO = 22;
+		return NULL;
+	}
+
+	struct _stack_node *tmp = *target;
+	_stack_node_type *out = (tmp->value);
+	*target = tmp->next;
+	free(tmp);
+	return out;
+}
+
+_stack_node_type *peek(stack target)
+{
+	if(target == NULL || (*target)->value == NULL)
+        {
+                JAY_ERRNO = 23;
+                return NULL;
+        }
+
+        return ((*target)->value);
+}
+
+int batch_pop(stack target, _stack_node_type *out[], int amount)
+{
+	int res = 0;
+	if(amount > stack_size(target)) 
+	{
+		JAY_ERRNO = 24;
 		return 0;
 	}
 
-	out = (*target)->value;
-	struct _stack_node *tmp = *target;
-	*target = tmp->next;
-	free(tmp);
-	return 1;
-}
-
-int peek(stack target, _stack_node_type *out)
-{
-	if(target == NULL || target->value == NULL)
-        {
-                JAY_ERRNO = 23;
-                return 0;
-        }
-
-        out = (*target)->value;
-        return 1;
-}
-
-int multpop(stack target, _stack_node_type *out[], int amount)
-{
-	int res = 0;
-	_stack_node_type *tmp;
 	for(int i = 0; i < amount; i++)
 	{
-		res += pop(target, tmp);
-		out[i] = tmp;
+		out[i] = pop(target);
+		res += (out[i] != NULL);
 	}
 	return (amount - res) + 1;
 }
@@ -119,10 +123,9 @@ int printstackto(stack target, FILE * restrict stream, const char *tostring(_sta
 
 int __sdestroy__(stack target)
 {
-	void *empty;
 	while(*target != NULL)
 	{
-		if(!pop(target, empty)) return 0;
+		if(!pop(target)) return 0;
 	}
 	free(*target);
 	return 1;

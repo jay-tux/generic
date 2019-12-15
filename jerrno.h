@@ -23,6 +23,7 @@ const char *get_error(int errno)
 		case 21: return "Generic stack error: can't push; stack is NULL.";
 		case 22: return "Generic stack error: can't pop from NULL-stack.";
 		case 23: return "Generic stack error: can't peek empty stack.";
+		case 24: return "Generic stack error: can't pop more elements than stack has.";
 
 		default: return "Unknown error.";
 	}
