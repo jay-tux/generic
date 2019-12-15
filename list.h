@@ -28,6 +28,7 @@ int remove_elem(list target, _list_node_type *value, int same(_list_node_type *,
 //GET
 int list_size(list target);
 int indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *));
+_list_node_type *at_index(list target, int index);
 
 //ADD BATCH
 int batch_append(list target, _list_node_type *values[], int amount);

@@ -237,6 +237,23 @@ int indexof(list target, _list_node_type *tofind, int same(_list_node_type *, _l
 	return ind;
 }
 
+_list_node_type *at_index(list target, int index)
+{
+	if(index < 0) { JAY_ERRNO = 15; return NULL; }
+	if(index >= list_size(target)) { JAY_ERRNO = 14; return NULL; }
+
+	struct _list_node *walk = *target;
+	int curr = 0;
+	while(walk->next != NULL && curr < index)
+	{
+		walk = walk->next;
+		curr++;
+	}
+
+	if(walk == NULL) { JAY_ERRNO = 13;  return NULL; }
+	return walk->value;
+}
+
 int batch_append(list target, _list_node_type *values[], int amount)
 {
 	int res = 0;
