@@ -70,7 +70,7 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
  ![Dependency: stdio.h](https://img.shields.io/static/v1?label=Dependency&message=stdio.h&color=informational)  
  ![Dependency: ./const.h](https://img.shields.io/static/v1?label=Dependency&message=./const.h&color=informational)  
  The ``./stack.h`` file defines all structs and typedefs required for the stack structure (last-in, first-out). All will be described in order of appearance:
- * ``_stack_node_type``: this is the variable type contained within the stack. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the list needs three helper functions to enable all implemented functionality; see ``./stack.c``.
+ * ``_stack_node_type``: this is the variable type contained within the stack. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the stack needs one helper function to enable all implemented functionality; see ``./stack.c``.
  * ``struct _stack_node``: this contains the stack nodes themselves. Each element of the stack is represented as a stack node.
  * ``stack``: ``stack`` is an alias for a pointer to a ``struct _stack_node`` pointer (aka ``struct _stack_node **``) this kind of pointer is necessary for all functionality.  
  ![Warning: the ``__sinit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__sinit__%20function%20returns%20a%20_stack_node%20*,%20not%20a%20stack&color=orange)  
@@ -90,4 +90,32 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
   * ``int stack_size(stack target)`` counts the amount of elements on the stack, and returns that number. Upon failure, returns 0.
   * ``int printstackto(stack target, FILE * restrict stream, const char *tostring(_stack_node_type *))`` prints the whole stack, top-to-bottom, using the ``tostring`` method, to the specified stream.
   * ``int __sdestroy__(stack target)`` removes the whole stack from memory.  
-  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20stack%20is%20corrupted-ff69b4)  
+  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20stack%20is%20corrupted-ff69b4) 
+
+## Queue
+### ./queue.h
+ ![Dependency: stdlib.h](https://img.shields.io/static/v1?label=Dependency&message=stdlib.h&color=informational)  
+ ![Dependency: stdio.h](https://img.shields.io/static/v1?label=Dependency&message=stdio.h&color=informational)  
+ ![Dependency: ./const.h](https://img.shields.io/static/v1?label=Dependency&message=./const.h&color=informational)  
+ The ``./queue.h`` file defines all structs and typedefs required for the queue structure (first-in, first-out). All will be described in order of appearance:
+ * ``_queue_node_type``: this is the variable type contained within the queue. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the queue needs one helper function to enable all implemented functionality; see ``./queue.c``.   
+ * ``struct _queue_node``: this contains the queue nodes themselves. Each element of the queue is represented as a queue node.  
+ * ``queue``: ``queue`` is an alias for a pointer to a ``struct _queue_node`` pointer (aka ``struct _queue_node **``) this kind of pointer is necessary for all functionality.  
+ ![Warning: the ``__qinit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__qinit__%20function%20returns%20a%20_queue_node%20*,%20not%20a%20queue&color=orange)  
+ ``./queue.h`` also contains all function headers for the ``./queue.c`` file.
+
+### ./queue.c
+  ![Dependency: ./queue.h](https://img.shields.io/static/v1?label=Dependency&message=./queue.h&color=informational)  
+  The ``./queue.c`` file implements all functionality for the queue, in 9 methods (most of these methods return 1 when succesfull, or otherwise 0. When any of these methods fail, ``JAY_ERRNO`` is set accordingly):  
+  * ``struct _queue_node *__qinit__()``; this method creates an empty queue. When failed, returns a ``NULL`` pointer and sets ``JAY_ERRNO`` accordingly.  
+  ![Warning: the ``__qinit__`` method does not return a queue, but a ``struct _queue_node*``](https://img.shields.io/static/v1?label=WARNING&message=The%20__qinit__%20function%20returns%20a%20_queue_node%20*,%20not%20a%20queue&color=orange)
+  * ``int enqueue(queue target, _queue_node_type *value)`` adds a new value to the end of the queue.
+  * ``int batch_enqueue(queue target, queue_node_type *values[], int amount)`` adds the first ``amount`` values from ``values[]`` to the end of the queue.                                                         
+  * ``_queue_node_type *dequeue(queue target)`` dequeues (removes) the first value in the queue. Returns that value, or ``NULL`` when failed.
+  * ``_queue_node_type *peek(queue target)`` peeks (looks at) the first value in the queue and returns either that value (on success) or ``NULL`` (on failure).
+  ![Candidate for renaming](https://img.shields.io/badge/Not%20OK-Candidate%20for%20renaming-red)
+  * ``int batch_dequeue(queue target, _queue_node_type *out[], int amount)`` dequeues the first ``amount`` values from the queue (fails if there are less than ``amount`` values). Those values are contained within ``out[]``. Returns (1 + amount of successes), or 0 when there are less than ``amount`` values on the queue.
+  * ``int queue_size(queue target)`` counts the amount of elements on the queue, and returns that number. Upon failure, returns 0.
+  * ``int printqueueto(queue target, FILE * restrict stream, const char *tostring(_queue_node_type *))`` prints the whole queue, top-to-bottom, using the ``tostring`` method, to the specified stream.
+  * ``int __qdestroy__(queue target)`` removes the whole queue from memory.  
+  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20queue%20is%20corrupted-ff69b4)

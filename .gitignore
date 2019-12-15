@@ -2,3 +2,4 @@ tests/*
 *.out
 *.html
 vgcore.*
+tmp.md
