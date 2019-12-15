@@ -43,9 +43,10 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
     * ``int remove_elem(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))``; removes the first occurence of ``value``. 
       * The ``int same(...)`` parameter is a function pointer. It should return 1 when its parameters are 'equal', otherwise 0.  
   
-  * Getting data about the list; contains two methods:
+  * Getting data about the list; contains three methods:
     * ``int list_size(list target)``; returns the amount of items in the list, or -1 on failure. When failing, ``JAY_ERRNO`` is set.  
-    * ``indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))``; returns the index of the first occurence of ``value``. Equality is determined by the ``int same(...)`` parameter, which should return 1 when both are equal.  
+    * ``int indexof(list target, _list_node_type *value, int same(_list_node_type *, _list_node_type *))``; returns the index of the first occurence of ``value``. Equality is determined by the ``int same(...)`` parameter, which should return 1 when both are equal.  
+    * ``_list_node_type *at_index(list target, int index)``; gets the element at the given index from the list or ``NULL`` when failed.
       
  * Adding objects in batch (each normal adding method has a batch version); contains four methods (each batch method returns ``(1 - <amount of failed insertions>)``):
    * ``int batch_append(list target, _list_node_type *values[], int amount)``; adds the first ``amount`` elements from ``values`` to the list, using the ``append`` method.
