@@ -95,6 +95,7 @@ int stack_size(stack target)
 {
 	if(target == NULL || (*target)->value == NULL)
         {
+		JAY_ERRNO = 25;
                  return 0;
         }
 

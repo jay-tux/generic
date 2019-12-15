@@ -22,7 +22,7 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
  * ``_list_node_type``: this is the variable type contained within the list. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the list needs three helper functions to enable all implemented functionality; see ``./list.c``.
  * ``struct _list_node``: this contains the list nodes themselves.
  * ``list``: ``list`` is an alias for a pointer to a ``struct _list_node`` pointer (aka ``struct _list_node **``) this kind of pointer is necessary for all functionality.  
- ![Warning: the ``__linit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__linit__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)
+ ![Warning: the ``__linit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__linit__%20function%20returns%20a%20_list_node%20*,%20not%20a%20list&color=orange)  
  ``./list.h`` also contains all function headers for the ``./list.c`` file.
 
 ### ./list.c
@@ -63,3 +63,30 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
  * Printing the list; contains one method:
    * ``int printlistto(list target, FILE * restrict stream, const char *tostring(_list_node_type *))``; prints the given list to the specified stream (usually ``stdout`` or ``stderr``, but can be a file stream as well)
      * The ``tostring`` parameter determines how a ``_list_node_type *`` is converted to a string (aka ``const char *``). It can be whatever you like, it only should return a NULL-terminated string. The string is not modified or freed.
+
+## Stack
+### ./stack.h
+ ![Dependency: stdlib.h](https://img.shields.io/static/v1?label=Dependency&message=stdlib.h&color=informational)  
+ ![Dependency: stdio.h](https://img.shields.io/static/v1?label=Dependency&message=stdio.h&color=informational)  
+ ![Dependency: ./const.h](https://img.shields.io/static/v1?label=Dependency&message=./const.h&color=informational)  
+ The ``./stack.h`` file defines all structs and typedefs required for the stack structure (last-in, first-out). All will be described in order of appearance:
+ * ``_stack_node_type``: this is the variable type contained within the stack. Change the ``char`` in this line to any other variable type to store other variables in it. Currently, the list needs three helper functions to enable all implemented functionality; see ``./stack.c``.
+ * ``struct _stack_node``: this contains the stack nodes themselves. Each element of the stack is represented as a stack node.
+ * ``stack``: ``stack`` is an alias for a pointer to a ``struct _stack_node`` pointer (aka ``struct _stack_node **``) this kind of pointer is necessary for all functionality.  
+ ![Warning: the ``__sinit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__sinit__%20function%20returns%20a%20_stack_node%20*,%20not%20a%20stack&color=orange)  
+ ``./stack.h`` also contains all function headers for the ``./stack.c`` file.
+
+ ### ./stack.c
+  ![Dependency: ./stack.h](https://img.shields.io/static/v1?label=Dependency&message=./stack.h&color=informational)  
+  The ``./stack.c`` file implements all functionality for the stack, in 9 methods (most of these methods return 1 when succesfull, or otherwise 0. When any of these methods fail, ``JAY_ERRNO`` is set accordingly):  
+  * ``struct _stack_node *__sinit__()``; this method creates an empty stack. When failed, returns a ``NULL`` pointer and sets ``JAY_ERRNO`` accordingly.  
+  ![Warning: the ``__sinit__`` method does not return a stack, but a ``struct _stack_node*``](https://img.shields.io/static/v1?label=WARNING&message=The%20__sinit__%20function%20returns%20a%20_stack_node%20*,%20not%20a%20stack&color=orange)
+  * ``int push(stack target, _stack_node_type *value)`` pushes a new value onto the stack.
+  * ``int batch_push(stack target, stack_node_type *values[], int amount)`` pushes the first ``amount`` values from ``values[]`` onto the stack. This reverses the order of the elements (for example, when batch pushing ``{ 1, 2, 3, 4, 5 }``, the stack's top will contain (in popping order) ``5 --> 4 --> 3 --> 2 --> 1``).
+  * ``_stack_node_type *pop(stack target)`` pops (removes) the top value of the stack. Returns that value, or ``NULL`` when failed.
+  * ``_stack_node_type *peek(stack target)`` peeks (looks at) the top value of the stack and returns either that value (on success) or ``NULL`` (on failure).
+  * ``int batch_pop(stack target, _stack_node_type *out[], int amount)`` pops the top ``amount`` values from the stack (fails if there are less than ``amount`` values). Those values are contained within ``out[]``. Returns (1 + amount of successes), or 0 when there are less than ``amount`` values on the stack.
+  * ``int stack_size(stack target)`` counts the amount of elements on the stack, and returns that number. Upon failure, returns 0.
+  * ``int printstackto(stack target, FILE * restrict stream, const char *tostring(_stack_node_type *))`` prints the whole stack, top-to-bottom, using the ``tostring`` method, to the specified stream.
+  * ``int __sdestroy__(stack target)`` removes the whole stack from memory.  
+  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20list%20is%20corrupted-ff69b4)  
