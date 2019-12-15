@@ -7,6 +7,7 @@ const char *get_error(int errno)
 	switch(errno)
 	{
 		case 0:  return "No error";
+
 		case 10: return "Generic list error: can't create root node.";
 		case 11: return "Generic list error: can't append; list is NULL.";
 		case 12: return "Generic list error: can't get index of element in empty list.";
@@ -17,6 +18,13 @@ const char *get_error(int errno)
 		case 17: return "Generic list error: can't sort empty list.";
 		case 18: return "Generic list error: can't sort 1-element list.";
 		case 19: return "Generic list error: STALIN SORT FAILED.";
+
+		case 20: return "Generic stack error: can't create root node.";
+		case 21: return "Generic stack error: can't push; stack is NULL.";
+		case 22: return "Generic stack error: can't pop from NULL-stack.";
+		case 23: return "Generic stack error: can't peek empty stack.";
+
+		default: return "Unknown error.";
 	}
 }
 
