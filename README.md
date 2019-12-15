@@ -89,4 +89,4 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
   * ``int stack_size(stack target)`` counts the amount of elements on the stack, and returns that number. Upon failure, returns 0.
   * ``int printstackto(stack target, FILE * restrict stream, const char *tostring(_stack_node_type *))`` prints the whole stack, top-to-bottom, using the ``tostring`` method, to the specified stream.
   * ``int __sdestroy__(stack target)`` removes the whole stack from memory.  
-  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20list%20is%20corrupted-ff69b4)  
+  ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20stack%20is%20corrupted-ff69b4)  
