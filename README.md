@@ -84,7 +84,8 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
   * ``int push(stack target, _stack_node_type *value)`` pushes a new value onto the stack.
   * ``int batch_push(stack target, stack_node_type *values[], int amount)`` pushes the first ``amount`` values from ``values[]`` onto the stack. This reverses the order of the elements (for example, when batch pushing ``{ 1, 2, 3, 4, 5 }``, the stack's top will contain (in popping order) ``5 --> 4 --> 3 --> 2 --> 1``).
   * ``_stack_node_type *pop(stack target)`` pops (removes) the top value of the stack. Returns that value, or ``NULL`` when failed.
-  * ``_stack_node_type *peek(stack target)`` peeks (looks at) the top value of the stack and returns either that value (on success) or ``NULL`` (on failure).
+  * ``_stack_node_type *peek(stack target)`` peeks (looks at) the top value of the stack and returns either that value (on success) or ``NULL`` (on failure).  
+  ![Candidate for renaming](https://img.shields.io/badge/Not%20OK-Candidate%20for%20renaming-red)
   * ``int batch_pop(stack target, _stack_node_type *out[], int amount)`` pops the top ``amount`` values from the stack (fails if there are less than ``amount`` values). Those values are contained within ``out[]``. Returns (1 + amount of successes), or 0 when there are less than ``amount`` values on the stack.
   * ``int stack_size(stack target)`` counts the amount of elements on the stack, and returns that number. Upon failure, returns 0.
   * ``int printstackto(stack target, FILE * restrict stream, const char *tostring(_stack_node_type *))`` prints the whole stack, top-to-bottom, using the ``tostring`` method, to the specified stream.

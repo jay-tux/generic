@@ -26,6 +26,13 @@ const char *get_error(int errno)
 		case 24: return "Generic stack error: can't pop more elements than stack has.";
 		case 25: return "Generic stack error: failed to count NULL.";
 
+		case 30: return "Generic queue error: can't create root node.";
+		case 31: return "Generic queue error: can't enqueue; queue is NULL.";
+		case 32: return "Generic queue error: can't dequeue; queue is NULL.";
+		case 33: return "Generic queue error: can't peek from empty queue.";
+		case 34: return "Generic queue error: can't dequeue more elements than queue has.";
+		case 35: return "Generic queue error: can't get size from NULL.";
+
 		default: return "Unknown error.";
 	}
 }
