@@ -33,6 +33,12 @@ const char *get_error(int errno)
 		case 34: return "Generic queue error: can't dequeue more elements than queue has.";
 		case 35: return "Generic queue error: can't get size from NULL.";
 
+		case 40: return "Generic n-tree error: can't create root.";
+		case 41: return "Generic n-tree error: can't append NULL-tree.";
+		case 42: return "Generic n-tree error: out of memory.";
+		case 43: return "Generic n-tree error: invalid path.";
+		case 44: return "Generic n-tree error: direction index larger than amount of children.";
+
 		default: return "Unknown error.";
 	}
 }
