@@ -19,6 +19,9 @@ struct _ntree_node {
 typedef struct _ntree_node **ntree;
 
 struct _ntree_node *__ntinit__();
+int depth(ntree target);
+_ntree_node_type *get_at(ntree target, int directions[], int amount);
+
 int append_left(ntree target, _ntree_node_type *value);
 int append_position(ntree target, int directions[], _ntree_node_type *value, int amount);
 

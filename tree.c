@@ -58,6 +58,60 @@ int append_position(ntree target, int direction[], _ntree_node_type *value, int 
 	JAY_ERRNO = 43; return 0;
 }
 
+int depth(ntree target)
+{
+	//depth tree = largest(depth children) + 1
+	int ch_act[NTREE_AMOUNT];
+	int ch = 0;
+	for(int i = 0; i < NTREE_AMOUNT; i++)
+	{
+		ch += ((*target)->children[i] != NULL);
+		ch_act[i] = ((*target)->children[i] != NULL);
+	}
+
+	if(ch)
+	{
+		int largest = 0;
+		int tmp = 0;
+		for(int i = 0; i < NTREE_AMOUNT; i++)
+		{
+			if(ch_act[i])
+			{
+				tmp = depth(&((*target)->children[i]));
+				if(tmp > largest) largest = tmp;
+			}
+		}
+		return 1 + largest;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+int quick_pow(int x, int y)
+{
+	int tot = 1;
+	for(int i = 0; i < y; i++) { tot *= x; }
+	return tot;
+}
+
+_ntree_node_type *get_at(ntree target, int directions[], int amount)
+{
+	if(target == NULL) { JAY_ERRNO = 45; return NULL; }
+	if(amount == 0) 
+	{
+		return (*target)->value;
+	}
+
+	struct _ntree_node *walker = *target;
+	for(int i = 0; i < amount; i++)
+	{
+		walker = walker->children[directions[i]];
+	}
+	return walker->value;
+}
+
 void printsubtreeto(struct _ntree_node *target, FILE * restrict stream, 
 		const char *tostring(_ntree_node_type *), int indent, int sorted)
 {
@@ -94,7 +148,6 @@ void printsubtreeto(struct _ntree_node *target, FILE * restrict stream,
 int printntreeto(ntree target, FILE * restrict stream, 
 		const char *tostring(_ntree_node_type *), int sorted)
 {
-	fprintf(stream, "ROOT: ");
 	printsubtreeto(*target, stream, tostring, 0, sorted);
 	return 1;
 }

@@ -38,6 +38,8 @@ const char *get_error(int errno)
 		case 42: return "Generic n-tree error: out of memory.";
 		case 43: return "Generic n-tree error: invalid path.";
 		case 44: return "Generic n-tree error: direction index larger than amount of children.";
+		case 45: return "Generic n-tree error: can't get directions in NULL-tree.";
+		case 46: return "Generic n-tree error: direction points to NULL.";
 
 		default: return "Unknown error.";
 	}
