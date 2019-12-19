@@ -6,6 +6,7 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
 ### ./const.h
  The ``./const.h`` file contains the definition of some "pseudo"-constants. These variables will be/can be set by the rest of the code, but you shouldn't set them yourself. Most are defined as ``static <type> JAY_<name> = <base value>;``. Following is a list of all of these variables, their uses and default values.
  * ``JAY_ERRNO``; is set to the error number by a failing function. Functions returning ``NULL`` or ``0``, will typically set this to an appropriate error.
+ * ``NTREE_AMOUNT`` (defined as a macro); is used by the ``./ntree.h`` and ``./ntree.c`` files to define data about n-trees. You can safely set this constant to another positive integer value. See ``./ntree.h``
 
 ### ./jerrno.h
  ![Dependency: ./const.h](https://img.shields.io/static/v1?label=Dependency&message=./const.h&color=informational)  
