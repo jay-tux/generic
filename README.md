@@ -120,3 +120,26 @@ All header/source files are double-import protected using ``_JAY_<filename>`` ma
   * ``int printqueueto(queue target, FILE * restrict stream, const char *tostring(_queue_node_type *))`` prints the whole queue, top-to-bottom, using the ``tostring`` method, to the specified stream.
   * ``int __qdestroy__(queue target)`` removes the whole queue from memory.  
   ![May be unstable](https://img.shields.io/badge/May%20be%20unstable-If%20the%20removal%20fails,%20the%20queue%20is%20corrupted-ff69b4)
+
+## N-tree
+### ./ntree.h
+ ![Dependency: stdlib.h](https://img.shields.io/static/v1?label=Dependency&message=stdlib.h&color=informational)   ![Dependency: stdio.h](https://img.shields.io/static/v1?label=Dependency&message=stdio.h&color=informational)  
+ ![Dependency: ./const.h](https://img.shields.io/static/v1?label=Dependency&message=./const.h&color=informational)  
+ The ``./ntree.h`` file defines all structs and typedefs required for the n-tree structure. All nodes in an n-tree have up to n nodes, where n is defined as ``NTREE_AMOUNT`` in ``./const.h`` All will be described in order of appearance:
+ * ``_ntree_node_type``: this is the variable type contained within the ntree. Change the ``char`` in this line to any other variable type to store other variables in it. There is one method (``tostring``) needed for full functionality.
+ * ``struct _ntree_node``: this contains the n-tree nodes themselves. Each element of the n-tree is represented as a n-tree node.  
+ * ``ntree``: ``ntree`` is an alias for a pointer to a ``struct _ntree_node`` pointer (aka ``struct _ntree_node **``) this kind of pointer is necessary for all functionality.  
+ ![Warning: the ``__ntinit__`` is an exception](https://img.shields.io/static/v1?label=WARNING&message=The%20__ntinit__%20function%20returns%20a%20_ntree_node%20*,%20not%20a%20ntree&color=orange)
+ ``./ntree.h`` also contains all function headers for the ``./ntree.c`` file.
+ ### ./ntree.c
+  ![Dependency: ./ntree.h](https://img.shields.io/static/v1?label=Dependency&message=./ntree.h&color=informational)
+  The ``./ntree.c`` file implements all functionality for the ntree, in 6 methods (most of these methods return 1 when succesfull, or otherwise 0. When any of these methods fail, ``JAY_ERRNO`` is set accordingly):  
+  * ``struct _ntree_node *__ntinit__()``; this method creates an empty ntree. When failed, returns a ``NULL`` pointer and sets ``JAY_ERRNO`` accordingly.  
+  ![Warning: the ``__ntinit__`` method does not return a ntree, but a ``struct _ntree_node*``](https://img.shields.io/static/v1?label=WARNING&message=The%20__ntinit__%20function%20returns%20a%20_ntree_node%20*,%20not%20a%20ntree&color=orange)
+  * ``int depth(ntree target)`` recursively calculates the depth (amount of levels) in the ntree. The root node level is also taken into the calculation.
+  * ``_ntree_node_type *get_at(ntree target, int directions[], int amount)`` walks through the tree, follownig the directions given in ``int directions []``. This array should contain only numbers between 0 and ``NTREE_AMOUNT``, and each number should represent the index of the child. Uses the first ``int amount`` directions.  
+  ![No bounds checking](https://img.shields.io/static/v1?label=WARNING&message=Can%20cause%20segmentation%faults&color=orange)  
+  * ``append_left(ntree target, _ntree_node_type *value)`` fills up the tree, starting from the left (child index 0).  
+  ![Not implemented yet](https://img.shields.io/static/v1?label=Not%20implemented%20yet&message=.&color=informative)
+  * ``int append_position(ntree target, int directions[], _ntree_node_type *value, int amount)`` appends a given value to the tree, at the position specified by ``int directions[]``. This method will not overwrite, but fail if the node exists already. If the path specified is not a child of an existing node, this method will fail as well.
+  * ``int printntreeto(ntree target, FILE * restrict stream, const char *tostring(_ntree_node_type *))`` prints the whole ntree, using the ``tostring`` method, to the specified stream.
